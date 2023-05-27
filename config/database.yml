@@ -1,0 +1,18 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  username: <%= ENV["SOCIAL_RAILS_DATABASE_USERNAME"] || 'postgres' %>
+  password: <%= ENV["SOCIAL_RAILS_DATABASE_PASSWORD"] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: social_rails_development
+
+test:
+  <<: *default
+  database: social_rails_test
+
+production:
+  <<: *default
+  database: social_rails_production
