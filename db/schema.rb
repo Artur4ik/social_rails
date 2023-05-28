@@ -12,9 +12,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 20_230_527_211_625) do
+ActiveRecord::Schema[7.0].define(version: 20_230_528_074_802) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
+
+  create_table 'comments', force: :cascade do |t|
+    t.text 'content'
+    t.string 'commentable_type'
+    t.bigint 'commentable_id'
+    t.bigint 'user_id'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index %w[commentable_type commentable_id], name: 'index_comments_on_commentable'
+    t.index ['user_id'], name: 'index_comments_on_user_id'
+  end
+
+  create_table 'likes', force: :cascade do |t|
+    t.string 'likable_type'
+    t.bigint 'likable_id'
+    t.bigint 'user_id'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index %w[likable_type likable_id], name: 'index_likes_on_likable'
+    t.index %w[user_id likable_id], name: 'index_likes_on_user_id_and_likable_id', unique: true
+    t.index ['user_id'], name: 'index_likes_on_user_id'
+  end
 
   create_table 'users', force: :cascade do |t|
     t.string 'first_name'
