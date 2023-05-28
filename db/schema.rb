@@ -18,23 +18,23 @@ ActiveRecord::Schema[7.0].define(version: 20_230_528_115_818) do
 
   create_table 'comments', force: :cascade do |t|
     t.text 'content'
-    t.string 'commentable_type'
-    t.bigint 'commentable_id'
+    t.bigint 'post_id'
     t.bigint 'user_id'
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
-    t.index %w[commentable_type commentable_id], name: 'index_comments_on_commentable'
+    t.index ['post_id'], name: 'index_comments_on_post_id'
     t.index ['user_id'], name: 'index_comments_on_user_id'
   end
 
   create_table 'likes', force: :cascade do |t|
-    t.string 'likable_type'
-    t.bigint 'likable_id'
+    t.string 'likeable_type'
+    t.bigint 'likeable_id'
     t.bigint 'user_id'
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
-    t.index %w[likable_type likable_id], name: 'index_likes_on_likable'
-    t.index %w[user_id likable_id], name: 'index_likes_on_user_id_and_likable_id', unique: true
+    t.index %w[likeable_type likeable_id], name: 'index_likes_on_likeable'
+    t.index %w[user_id likeable_id likeable_type], name: 'index_likes_on_user_id_and_likeable_id_and_likeable_type',
+                                                   unique: true
     t.index ['user_id'], name: 'index_likes_on_user_id'
   end
 

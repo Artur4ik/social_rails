@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    class ErrorsSerializer
+    class ErrorSerializer
       def initialize(model)
         @model = model
       end

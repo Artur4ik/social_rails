@@ -2,12 +2,13 @@
 
 module Api
   module V1
-    class UsersSerializer
+    class CommentSerializer
       include JSONAPI::Serializer
 
-      attributes :email,
-                 :first_name,
-                 :last_name,
+      belongs_to :post
+      belongs_to :user
+
+      attributes :content,
                  :created_at,
                  :updated_at
     end

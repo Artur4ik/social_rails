@@ -2,45 +2,43 @@
 
 module Api
   module V1
-    class CommentsController < BaseController
+    class PostsController < BaseController
       include ActsLikeJwtTokenAuthorizable
 
       def index
-        render json: CommentSerializer.new(comments),
+        render json: PostSerializer.new(posts),
                status: :ok
       end
 
       def create
-        @comment = Comment.new(**permitted_params,
-                               post:,
-                               user: current_user)
+        @post = post.new(**permitted_params, user: current_user)
 
-        if comment.save
-          render json: CommentSerializer.new(comment),
+        if post.save
+          render json: PostSerializer.new(post),
                  status: :ok
         else
-          render json: ErrorSerializer.new(comment),
+          render json: ErrorSerializer.new(post),
                  status: :unprocessable_entity
         end
       end
 
       def update
-        if comment.update(permitted_params)
-          render json: CommentSerializer.new(comment),
+        if post.update(permitted_params)
+          render json: PostSerializer.new(post),
                  status: :ok
         else
-          render json: ErrorSerializer.new(comment),
+          render json: ErrorSerializer.new(post),
                  status: :unprocessable_entity
         end
       end
 
       def show
-        render json: CommentSerializer.new(comment),
+        render json: PostSerializer.new(post),
                status: :ok
       end
 
       def destroy
-        if comment.destroy
+        if post.destroy
           render json: {},
                  status: :no_content
         else
@@ -55,19 +53,15 @@ module Api
         params
           .require(:data)
           .require(:attributes)
-          .permit(:content)
+          .permit(:content, :image)
       end
 
-      def comments
-        @comments ||= post.comments
-      end
-
-      def comment
-        @comment ||= comments.find(params[:id])
+      def posts
+        @posts ||= current_user.posts
       end
 
       def post
-        @post ||= Post.find(params[:post_id])
+        @post ||= posts.find(params[:id])
       end
     end
   end

@@ -19,7 +19,7 @@ module Api
 
         private
 
-        attr_reader :user, :exp
+        attr_reader :user
 
         def payload
           {

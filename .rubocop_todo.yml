@@ -11,3 +11,28 @@ Style/IfUnlessModifier:
 
 Layout/LineLength:
   Max: 150
+  Exclude:
+  - 'bin/*'
+
+Metrics/BlockLength:
+  Exclude:
+  - 'bin/*'
+  - 'db/schema.rb'
+  - 'db/migrate/*'
+
+Metrics/MethodLength:
+  Exclude:
+  - 'bin/*'
+  - 'db/schema.rb'
+  - 'db/migrate/*'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+  - 'bin/*'
+
+Metrics/PerceivedComplexity:
+  Exclude:
+  - 'bin/*'
+
+Lint/MissingSuper:
+  Enabled: false

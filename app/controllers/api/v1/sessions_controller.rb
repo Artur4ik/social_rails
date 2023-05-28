@@ -8,7 +8,7 @@ module Api
           render json: session_creator.call,
                  status: :ok
         else
-          render json: ErrorsSerializer.new(authenticator),
+          render json: ErrorSerializer.new(authenticator),
                  status: :unprocessable_entity
         end
       end
@@ -21,8 +21,8 @@ module Api
       end
 
       def authenticator
-        @authenticator ||= AuthenticatorsFormObject::User.new(email: permitted_params[:email],
-                                                              password: permitted_params[:password])
+        @authenticator ||= ::Authenticators::UserFormObject.new(email: permitted_params[:email],
+                                                                password: permitted_params[:password])
       end
 
       def session_creator

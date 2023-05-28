@@ -3,40 +3,39 @@
 module Api
   module V1
     class UsersController < BaseController
-      def index
-        render json: UsersSerializer.new(User.all),
-               status: :ok
-      end
+      include ActsLikeJwtTokenAuthorizable
+
+      before_action :authorize_user!, except: %i[create]
 
       def create
         @user = User.new(permitted_params)
 
         if user.save
-          render json: UsersSerializer.new(user),
+          render json: UserSerializer.new(user),
                  status: :ok
         else
-          render json: ErrorsSerializer.new(user),
+          render json: ErrorSerializer.new(user),
                  status: :unprocessable_entity
         end
       end
 
       def update
-        if user.update(permitted_params)
-          render json: UsersSerializer.new(user),
+        if current_user.update(permitted_params)
+          render json: UserSerializer.new(current_user),
                  status: :ok
         else
-          render json: ErrorsSerializer.new(user),
+          render json: ErrorSerializer.new(current_user),
                  status: :unprocessable_entity
         end
       end
 
       def show
-        render json: UsersSerializer.new(user),
+        render json: UserSerializer.new(current_user),
                status: :ok
       end
 
       def destroy
-        if user.destroy
+        if current_user.destroy
           render json: {},
                  status: :no_content
         else

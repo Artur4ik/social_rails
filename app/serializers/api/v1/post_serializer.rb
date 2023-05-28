@@ -2,13 +2,13 @@
 
 module Api
   module V1
-    class CommentsSerializer
+    class PostSerializer
       include JSONAPI::Serializer
 
-      attributes :content,
-                 :commentable_id,
-                 :commentable_type,
-                 :user_id,
+      belongs_to :user
+
+      attributes :image,
+                 :description,
                  :created_at,
                  :updated_at
     end

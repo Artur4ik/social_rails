@@ -3,10 +3,13 @@
 class User < ApplicationRecord
   has_secure_password
 
-  has_many :likes, dependent: :destroy
-  has_many :comments, dependent: :destroy
+  with_options dependent: :destroy do
+    has_many :likes
+    has_many :comments
+    has_many :posts
+  end
 
   with_options presence: true do
-    validates :email
+    validates :email, uniqueness: true
   end
 end
