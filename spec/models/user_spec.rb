@@ -3,5 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  subject(:user) { described_class.new(email:, password_digest:) }
+
+  let(:email) { 'example@test.com' }
+  let(:password_digest) { 'qwerty' }
+
+  it 'is valid' do
+    expect(user).to be_valid
+  end
 end
