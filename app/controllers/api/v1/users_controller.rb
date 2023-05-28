@@ -3,8 +3,6 @@
 module Api
   module V1
     class UsersController < BaseController
-      before_action :user, only: %i[update show destroy]
-
       def index
         render json: UsersSerializer.new(User.all),
                status: :ok

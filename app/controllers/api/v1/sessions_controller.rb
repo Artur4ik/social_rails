@@ -4,10 +4,9 @@ module Api
   module V1
     class SessionsController < BaseController
       def create
-        authenticator = Authenticators::User.new(email:, password:)
-
-        if authenticator.valid?
-          render json: {}
+        if authenticated?
+          render json: session_creator.call,
+                 status: :ok
         else
           render json: ErrorsSerializer.new(authenticator),
                  status: :unprocessable_entity
@@ -16,19 +15,25 @@ module Api
 
       private
 
+      with_options to: :authenticator do
+        delegate :authenticated?
+        delegate :user
+      end
+
+      def authenticator
+        @authenticator ||= AuthenticatorsFormObject::User.new(email: permitted_params[:email],
+                                                              password: permitted_params[:password])
+      end
+
+      def session_creator
+        @session_creator ||= Sessions::Create.new(authenticator.user)
+      end
+
       def permitted_params
-        params
-          .require(:data)
-          .require(:attributes)
-          .permit(:email, :password)
-      end
-
-      def email
-        permitted_params[:email]
-      end
-
-      def password
-        permitted_params[:password]
+        @permitted_params ||= params
+                              .require(:data)
+                              .require(:attributes)
+                              .permit(:email, :password)
       end
     end
   end

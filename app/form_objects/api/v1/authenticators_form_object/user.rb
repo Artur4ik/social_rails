@@ -2,12 +2,14 @@
 
 module Api
   module V1
-    module Authenticators
+    module AuthenticatorsFormObject
       class User
         include ActiveModel::Validations
 
         validate :check_user_presence
         validate :check_user_password, if: -> { errors.empty? }
+
+        attr_reader :user
 
         def initialize(email:, password:)
           @email = email
@@ -20,9 +22,11 @@ module Api
           errors.empty?
         end
 
+        alias authenticated? valid?
+
         private
 
-        attr_reader :email, :password, :user
+        attr_reader :email, :password
 
         def check_user_presence
           return if (@user = ::User.find_by(email:))
