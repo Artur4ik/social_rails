@@ -47,6 +47,11 @@ module Api
         end
       end
 
+      def feed
+        render json: FeedQuery.new(user: current_user).call,
+               status: :ok
+      end
+
       private
 
       def permitted_params

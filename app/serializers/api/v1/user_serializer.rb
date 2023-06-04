@@ -6,12 +6,13 @@ module Api
       include JSONAPI::Serializer
 
       attributes :email,
-                 :first_name,
-                 :last_name,
+                 :name,
                  :birthdate,
+                 :avatar,
                  :sex,
                  :country,
                  :city,
+                 :bio,
                  :created_at,
                  :updated_at
     end

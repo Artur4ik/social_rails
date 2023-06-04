@@ -30,7 +30,7 @@ module Api
       end
 
       def show
-        render json: UserSerializer.new(current_user),
+        render json: UserSerializer.new(user),
                status: :ok
       end
 
@@ -44,17 +44,28 @@ module Api
         end
       end
 
+      def profile
+        render json: UserQuery.new(user:).call,
+               status: :ok
+      end
+
       private
 
       def permitted_params
         params
           .require(:data)
           .require(:attributes)
-          .permit(:email, :password, :country, :city, :sex, :birthdate)
+          .permit(:avatar, :email, :password, :name, :country, :city, :sex, :birthdate, :bio)
       end
 
       def user
-        @user ||= User.find(params[:id])
+        return @user if defined? @user
+
+        find_user(params[:id] || params[:user_id])
+      end
+
+      def find_user(id)
+        @user = User.find_by(name: id) || User.find(id)
       end
     end
   end
