@@ -1,17 +1,19 @@
 # frozen_string_literal: true
 
-module Api
+module API
   module V1
     class PostsController < BaseController
       include ActsLikeJwtTokenAuthorizable
 
+      before_action -> { authorize_user_access!(post) }, only: %i[update destroy]
+
       def index
-        render json: PostSerializer.new(posts),
+        render json: PostSerializer.new(posts_pagination.paginate, { meta: meta(posts_pagination) }),
                status: :ok
       end
 
       def create
-        @post = post.new(**permitted_params, user: current_user)
+        @post = posts.build(**permitted_params, user: current_user)
 
         if post.save
           render json: PostSerializer.new(post),
@@ -38,35 +40,27 @@ module Api
       end
 
       def destroy
-        if post.destroy
-          render json: {},
-                 status: :no_content
-        else
-          render json: {},
-                 status: :internal_server_error
-        end
+        post.destroy
+
+        head :no_content
       end
 
       def feed
-        render json: FeedQuery.new(user: current_user).call,
+        render json: PostSerializer.new(current_user_feed_pagination.paginate,
+                                        { meta: meta(current_user_feed_pagination), include: }),
                status: :ok
       end
 
       private
 
-      def permitted_params
-        params
-          .require(:data)
-          .require(:attributes)
-          .permit(:content, :image)
-      end
+      def permitted_params = params.permit(:location, :image, :description)
+      def posts = @posts ||= Post.order(created_at: :desc)
+      def posts_pagination = @posts_pagination ||= Pagination.new(posts, page_params)
+      def post = @post ||= posts.find(params[:id])
+      def current_user_feed = UserFeedWithAssociationsQuery.query(current_user)
 
-      def posts
-        @posts ||= current_user.posts
-      end
-
-      def post
-        @post ||= posts.find(params[:id])
+      def current_user_feed_pagination
+        @current_user_feed_pagination ||= Pagination.new(current_user_feed, page_params)
       end
     end
   end

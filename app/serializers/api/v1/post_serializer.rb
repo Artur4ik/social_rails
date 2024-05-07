@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-module Api
+module API
   module V1
-    class PostSerializer
-      include JSONAPI::Serializer
-
+    class PostSerializer < BaseSerializer
       belongs_to :user
 
-      attributes :image,
-                 :description,
-                 :location,
-                 :created_at,
-                 :updated_at
+      has_many :likes
+      has_many :comments
+
+      attributes :description,
+                 :location
+
+      attribute(:image) { |object| object.image.url }
     end
   end
 end

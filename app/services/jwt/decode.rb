@@ -6,16 +6,10 @@ module Jwt
       @token = token
     end
 
-    def call
-      decode_token
-    end
+    def call = JWT.decode(token, secret, true, algorithm:).first
 
     private
 
     attr_reader :token
-
-    def decode_token
-      JWT.decode(token, secret, true, algorithm:).first
-    end
   end
 end

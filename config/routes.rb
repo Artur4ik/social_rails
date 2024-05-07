@@ -3,14 +3,18 @@
 Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
-      resources :users do
-        get :profile
+      resources :users, param: :name, only: %i[show create] do
+        post :follow, controller: 'relationships'
+        post :unfollow, controller: 'relationships'
       end
-      resources :posts do
-        resources :comments
+      resources :posts, except: %i[edit new] do
+        resource :like, only: %i[create destroy], controller: 'posts/likes'
+        resources :comments, except: %i[edit new] do
+          resource :like, only: %i[create destroy], controller: 'comments/likes'
+        end
+        get :feed, on: :collection
       end
-      get 'feed', to: 'posts#feed'
-      resources :likes
+      resource :profile, only: %i[show update destroy]
 
       post :sign_in, action: :create, controller: 'sessions'
     end

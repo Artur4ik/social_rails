@@ -6,16 +6,10 @@ module Jwt
       @payload = payload
     end
 
-    def call
-      encode_token
-    end
+    def call = JWT.encode(payload, secret, algorithm)
 
     private
 
     attr_reader :payload
-
-    def encode_token
-      JWT.encode(payload, secret, algorithm)
-    end
   end
 end

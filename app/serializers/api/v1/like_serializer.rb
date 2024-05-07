@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
-module Api
+module API
   module V1
-    class LikeSerializer
-      include JSONAPI::Serializer
-
-      belongs_to :user
+    class LikeSerializer < BaseSerializer
       belongs_to :likeable, polymorphic: true
 
-      attributes :created_at, :destroyed?
+      attributes :user_id
     end
   end
 end

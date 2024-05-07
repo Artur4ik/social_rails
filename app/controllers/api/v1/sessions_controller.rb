@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Api
+module API
   module V1
     class SessionsController < BaseController
       def create
@@ -15,14 +15,14 @@ module Api
 
       private
 
-      with_options to: :authenticator do
+      with_options to: :authenticator, private: true do
         delegate :authenticated?
         delegate :user
       end
 
       def authenticator
-        @authenticator ||= ::Authenticators::UserFormObject.new(email: permitted_params[:email],
-                                                                password: permitted_params[:password])
+        @authenticator ||= Authenticators::UserFormObject.new(email: permitted_params[:email],
+                                                              password: permitted_params[:password])
       end
 
       def session_creator
@@ -30,10 +30,7 @@ module Api
       end
 
       def permitted_params
-        @permitted_params ||= params
-                              .require(:data)
-                              .require(:attributes)
-                              .permit(:email, :password)
+        @permitted_params ||= params.permit(:email, :password)
       end
     end
   end

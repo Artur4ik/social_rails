@@ -1,35 +1,27 @@
 # frozen_string_literal: true
 
-module Api
+module API
   module V1
     class LikesController < BaseController
       include ActsLikeJwtTokenAuthorizable
 
       def create
-        if like_form_object.save
-          render json: LikeSerializer.new(like_form_object.like),
-                 status: :ok
-        else
-          render json: {},
-                 status: :unprocessable_entity
-        end
+        @like = likeable.likes.create(user: current_user) unless like
+
+        render json: LikeSerializer.new(like),
+               status: :created
+      end
+
+      def destroy
+        like&.destroy
+
+        head :no_content
       end
 
       private
 
-      def like_form_object
-        @like_form_object ||= ::LikeFormObject.new(likeable_id: permitted_params[:likeable_id],
-                                                   likeable_type: permitted_params[:likeable_type],
-                                                   user: current_user)
-      end
-
-      def permitted_params
-        @permitted_params ||=
-          params
-          .require(:data)
-          .require(:attributes)
-          .permit(:user_id, :likeable_id, :likeable_type)
-      end
+      def like = @like ||= likeable.like(current_user)
+      def likeable = raise NotImplementedError
     end
   end
 end

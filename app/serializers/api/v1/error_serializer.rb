@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module Api
+module API
   module V1
-    class ErrorSerializer
+    class ErrorSerializer < BaseSerializer
       def initialize(model)
         @model = model
       end
@@ -24,7 +24,7 @@ module Api
             title: error.type,
             detail: error.message,
             source: {
-              pointer: "/data/attributes/#{error.attribute}"
+              pointer: error.attribute
             }
           }
         end
