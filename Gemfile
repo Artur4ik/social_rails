@@ -15,6 +15,7 @@ gem 'rack-cors'
 gem 'rails'
 gem 'sidekiq'
 gem 'sprockets-rails'
+gem 'pry'
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 group :development, :test do
